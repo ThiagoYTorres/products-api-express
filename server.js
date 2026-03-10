@@ -6,6 +6,7 @@ const app = e()
 
 const PORT = 8000
 
+app.use(e.json())
 
 app.get('/produtos', (req,res) => {
     
@@ -35,6 +36,7 @@ if(req.query){
     }
     else{
         res.json(products)
+        console.log (req.body)
     }
 })   
 
@@ -48,7 +50,7 @@ app.get('/produtos/stats', (req,res) => {
     res.json(stats)
 })
 
-
+// Busca por ID
 app.get('/produtos/:id', (req,res) => {
     const {id} = req.params
 
@@ -61,7 +63,6 @@ app.get('/produtos/:id', (req,res) => {
                 message:"id do produto precisa ser um número"
             })
     }
-
     else{
         selectProd = selectProd.find( el => el.id == Number(id))
                 if(!selectProd){
@@ -72,14 +73,29 @@ app.get('/produtos/:id', (req,res) => {
                     })
                 }
                 else{
-                    res.json(selectProd)
-                
+                    res.json(selectProd)             
             }
     }
        
 })
 
+// Nessa URL passamos o objeto em formato JSON, app.use(e.json()) lê esse body
+app.post('/produtos' ,(req,res) => {
+    const { name,category,price,stock,brand,value } = req.body
 
+    const novoProd = {
+        id: products.length + 1,
+        name,
+        category,
+        price,
+        stock,
+        brand,
+        value
+    }
+    console.log(req.body)
+    products.push(novoProd)
+    res.status(201).json({message:"Produto adicionado com sucesso!"})
+})
 
 
 
