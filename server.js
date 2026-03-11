@@ -1,5 +1,5 @@
 import { products } from "./produtos.js";
-
+import { router } from './routes/expressRouter.js'
 import e from "express";
 
 const app = e()
@@ -8,49 +8,9 @@ const PORT = 8000
 
 app.use(e.json())
 
-app.get('/produtos', (req,res) => {
-    
-// Query Strings
-if(req.query){
-    console.log(req.query)
-        let queryData = products
-        const { name , category, precMin, precMax, brand } = req.query
+app.use('/produtos', router )
 
-        if(name){
-            queryData = queryData.filter( el => el.name.toLowerCase().includes(name.toLowerCase()) )
-        }
-        if(category){
-            queryData = queryData.filter( el => el.category.toLowerCase() === category.toLowerCase() )
-        }
-        if(brand){
-            queryData = queryData.filter(  el => el.brand.toLowerCase() === brand.toLowerCase() )
-        }
-        if(precMax){
-            queryData = queryData.filter(el => el.price <= Number(precMax))
-        }
-        if(precMin){
-            queryData = queryData.filter(el => el.price >= Number(precMin))
-        }
 
-        res.json(queryData)
-    }
-    else{
-        res.json(products)
-        console.log (req.body)
-    }
-})   
-
-app.get('/produtos/stats', (req,res) => {
-    const stats = {
-        totalProdutos: products.length,
-        valorTotalEstoque: 'R$ ' + products.reduce( (total,el) => total + el.price,0 ).toFixed(2) ,
-        produtosAtivos: products.filter( el => el.active == true).length,
-        produtosInativos: products.filter( el => el.active == false).length
-    }
-    res.json(stats)
-})
-
-// Busca por ID
 app.get('/produtos/:id', (req,res) => {
     const {id} = req.params
 
@@ -97,6 +57,28 @@ app.post('/produtos' ,(req,res) => {
     res.status(201).json({message:"Produto adicionado com sucesso!"})
 })
 
+app.put('/produtos/:id', (req,res) => {
+    const id = Number(req.params.id)
+    const index = products.findIndex(p => p.id === id);
 
+  if (index === -1) {
+    return res.status(404).json({ message: "Produto não encontrado" });
+  }
+
+  const { name,category,price,stock,brand,active } = req.body;
+
+  products[index] = {
+    id,
+    name,
+    category,
+    price,
+    stock,
+    brand,
+    active
+  };
+
+  res.json(products[index]);
+    
+})
 
 app.listen( PORT,() => console.log(`servidor ligado / PORTA: ${PORT}`))
