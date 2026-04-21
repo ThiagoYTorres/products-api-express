@@ -6,8 +6,8 @@ export const router = Router()
 
 const validarProduto = (req,res,next) => {
     // Verifica se o objeto possui todos os campos obrigatórios
-    const campos = [ 'id','name', 'category', 'price', 'stock', 'brand', 'active' ]
-
+    const campos = ['name', 'category', 'price', 'stock', 'brand', 'active' ]
+  
     // [ in ] verifica se aquela propriedade existe naquele objeto
     const vefCampos = campos.every( el => el in req.body)
     if(!vefCampos){
