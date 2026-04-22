@@ -93,11 +93,11 @@ try{
 
 // POST
 export const createProduct = async (req,res) => {
-    const { name,category,price,stock,brand,value, active } = req.body
+    const { name, category, price, stock, brand } = req.body
     console.log(req.body)
     try{
-        const [produto] = await pool.query(`INSERT INTO produtos (name,category,price,stock,brand,active) 
-            VALUES (?,?,?,?,?,?)`,[name,category,price,stock,brand,active] )
+        const [produto] = await pool.query(`INSERT INTO produtos (name, category, price ,stock ,brand) 
+            VALUES (?,?,?,?,?)`,[name,category,price,stock,brand] )
             
 
         res.status(201).json({
@@ -128,7 +128,7 @@ try{
   if (index === -1) {
     return res.status(404).json({ message: "Produto não encontrado" })
   }
-  const { name,category,price,stock,brand,active } = req.body
+  const { name,category,price,stock,brand } = req.body
 
   const [produto] = await pool.query(`
     UPDATE produtos 
@@ -136,8 +136,8 @@ try{
         category = ?,
         price = ?,
         stock = ?,
-        brand = ?,
-        active = ? WHERE id = ?`, [name,category,price,stock,brand,active,id] )
+        brand = ?
+        WHERE id = ?`, [name,category,price,stock,brand,id] )
 
   
   res.status(200).json({
